@@ -133,7 +133,7 @@ class process_ocr extends adhoc_task {
      * @param \stored_file $file The uploaded file.
      * @param string $apikey The LandingAI API key.
      * @return string The extracted text.
-     * @throws \moodle_exception If the API call fails.
+     * @throws \RuntimeException If the API call fails.
      */
     protected function call_landingai_api(\stored_file $file, string $apikey): string {
         // Write the file to a temp path for upload.
@@ -165,20 +165,14 @@ class process_ocr extends adhoc_task {
             $httpcode = $curl->get_info()['http_code'] ?? 0;
 
             if ($httpcode !== 200) {
-                throw new \moodle_exception(
-                    'error',
-                    'mod_ocrsubmission',
-                    '',
+                throw new \RuntimeException(
                     "LandingAI API returned HTTP {$httpcode}: {$response}"
                 );
             }
 
             $decoded = json_decode($response, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \moodle_exception(
-                    'error',
-                    'mod_ocrsubmission',
-                    '',
+                throw new \RuntimeException(
                     'Invalid JSON response from LandingAI API.'
                 );
             }
@@ -198,7 +192,7 @@ class process_ocr extends adhoc_task {
      *
      * @param array $response Decoded API response.
      * @return string Extracted text.
-     * @throws \moodle_exception If text cannot be extracted.
+     * @throws \RuntimeException If text cannot be extracted.
      */
     protected function extract_text_from_response(array $response): string {
         // LandingAI Document Analysis API returns data in the "data" key.
@@ -240,10 +234,7 @@ class process_ocr extends adhoc_task {
         }
 
         // If none of the above, return a JSON dump for debugging.
-        throw new \moodle_exception(
-            'error',
-            'mod_ocrsubmission',
-            '',
+        throw new \RuntimeException(
             'Unable to extract text from LandingAI API response. Response: ' . json_encode($response)
         );
     }
