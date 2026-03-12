@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="10" fill="#e85d04"/>
+  <!-- Document shape -->
+  <rect x="20" y="15" width="45" height="55" rx="3" fill="white" stroke="#c44d02" stroke-width="2"/>
+  <!-- Folded corner -->
+  <polygon points="55,15 65,25 55,25" fill="#c44d02"/>
+  <rect x="55" y="15" width="10" height="10" fill="white"/>
+  <!-- Text lines -->
+  <rect x="27" y="35" width="30" height="3" rx="1" fill="#e85d04" opacity="0.6"/>
+  <rect x="27" y="43" width="25" height="3" rx="1" fill="#e85d04" opacity="0.6"/>
+  <rect x="27" y="51" width="28" height="3" rx="1" fill="#e85d04" opacity="0.6"/>
+  <!-- OCR magnifier -->
+  <circle cx="68" cy="72" r="14" fill="none" stroke="white" stroke-width="4"/>
+  <line x1="78" y1="82" x2="88" y2="92" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <!-- OCR symbol inside magnifier -->
+  <text x="62" y="77" font-family="Arial" font-size="10" fill="white" font-weight="bold">T</text>
+</svg>

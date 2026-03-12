@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/ocrsubmission/db" VERSION="20241201" COMMENT="XMLDB file for Moodle mod/ocrsubmission"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="ocrsubmission" COMMENT="Stores each ocrsubmission activity instance.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="Course ocrsubmission belongs to."/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" COMMENT="Name of the ocrsubmission activity."/>
+        <FIELD NAME="intro" TYPE="text" NOTNULL="false" COMMENT="Activity description."/>
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" COMMENT="Format of the intro field."/>
+        <FIELD NAME="grade" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="100" COMMENT="Maximum grade (0 means no grade, negative means scale id)."/>
+        <FIELD NAME="apikey" TYPE="char" LENGTH="512" NOTNULL="false" COMMENT="LandingAI API key for this activity."/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="Timestamp of when the instance was created."/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="Timestamp of when the instance was last modified."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="ocrsubmission_submissions" COMMENT="Stores student submissions.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="ocrsubmissionid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="FK to ocrsubmission.id"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="FK to user.id"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="32" NOTNULL="true" DEFAULT="pending" COMMENT="Status: pending, processing, complete, error"/>
+        <FIELD NAME="ocr_text" TYPE="text" NOTNULL="false" COMMENT="Extracted text from the OCR API."/>
+        <FIELD NAME="error_message" TYPE="text" NOTNULL="false" COMMENT="Error message if OCR processing failed."/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_ocrsubmission" TYPE="foreign" FIELDS="ocrsubmissionid" REFTABLE="ocrsubmission" REFFIELDS="id"/>
+        <KEY NAME="fk_user" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="ocrsubmissionid_userid" UNIQUE="false" FIELDS="ocrsubmissionid, userid"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="ocrsubmission_grades" COMMENT="Stores teacher grades and feedback.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="ocrsubmissionid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="FK to ocrsubmission.id"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="Student user id (FK to user.id)"/>
+        <FIELD NAME="grader" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="Teacher who graded (FK to user.id)"/>
+        <FIELD NAME="grade" TYPE="number" LENGTH="10" NOTNULL="false" DECIMALS="5" COMMENT="Grade given to the student."/>
+        <FIELD NAME="feedback" TYPE="text" NOTNULL="false" COMMENT="Teacher feedback text (may contain HTML from TinyMCE)."/>
+        <FIELD NAME="feedbackformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="1" COMMENT="Format of the feedback field (1=HTML)."/>
+        <FIELD NAME="timegraded" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_ocrsubmission" TYPE="foreign" FIELDS="ocrsubmissionid" REFTABLE="ocrsubmission" REFFIELDS="id"/>
+        <KEY NAME="fk_user" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="fk_grader" TYPE="foreign" FIELDS="grader" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="ocrsubmissionid_userid" UNIQUE="true" FIELDS="ocrsubmissionid, userid"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>
