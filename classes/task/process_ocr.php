@@ -36,7 +36,7 @@ use core\task\adhoc_task;
 class process_ocr extends adhoc_task {
 
     /** @var string LandingAI API endpoint */
-    const API_ENDPOINT = 'https://api.landing.ai/v1/tools/document-analysis';
+    const API_ENDPOINT = 'https://api.va.landing.ai/v1/ade/parse';
 
     /**
      * Return the task's name as shown in admin screens.
@@ -157,7 +157,7 @@ class process_ocr extends adhoc_task {
                 ],
                 [
                     'CURLOPT_HTTPHEADER' => [
-                        'Authorization: Basic ' . base64_encode($apikey . ':'),
+                        'Authorization: Bearer ' . $apikey,
                     ],
                 ]
             );
@@ -195,17 +195,34 @@ class process_ocr extends adhoc_task {
      * @throws \RuntimeException If text cannot be extracted.
      */
     protected function extract_text_from_response(array $response): string {
-        // LandingAI Document Analysis API returns data in the "data" key.
-        // The structure may contain "chunks" with "text" fields, or a top-level "markdown" field.
+        // LandingAI ADE API (api.va.landing.ai/v1/ade/parse) returns a top-level "markdown" field.
+        if (!empty($response['markdown'])) {
+            return (string) $response['markdown'];
+        }
+
+        // Fallback: try chunks array (each chunk has a "markdown" or "text" field).
+        if (!empty($response['chunks']) && is_array($response['chunks'])) {
+            $texts = [];
+            foreach ($response['chunks'] as $chunk) {
+                if (!empty($chunk['markdown'])) {
+                    $texts[] = (string) $chunk['markdown'];
+                } elseif (!empty($chunk['text'])) {
+                    $texts[] = (string) $chunk['text'];
+                }
+            }
+            if (!empty($texts)) {
+                return implode("\n\n", $texts);
+            }
+        }
+
+        // Fallback: legacy "data" wrapper from older API versions.
         if (!empty($response['data'])) {
             $data = $response['data'];
 
-            // Try to get markdown text.
             if (!empty($data['markdown'])) {
                 return (string) $data['markdown'];
             }
 
-            // Try chunks array.
             if (!empty($data['chunks']) && is_array($data['chunks'])) {
                 $texts = [];
                 foreach ($data['chunks'] as $chunk) {
@@ -218,7 +235,6 @@ class process_ocr extends adhoc_task {
                 }
             }
 
-            // Try text field directly.
             if (!empty($data['text'])) {
                 return (string) $data['text'];
             }
