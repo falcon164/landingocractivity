@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The main ocrsubmission configuration form.
+ * The main landingocractivity configuration form.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,11 +29,11 @@ require_once($CFG->dirroot . '/course/moodleform_mod.php');
 /**
  * Module instance settings form.
  *
- * @package    mod_ocrsubmission
+ * @package    mod_landingocractivity
  * @copyright  2024, LandingAI OCR Submission
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_ocrsubmission_mod_form extends moodleform_mod {
+class mod_landingocractivity_mod_form extends moodleform_mod {
 
     /**
      * Defines forms elements.
@@ -47,7 +47,7 @@ class mod_ocrsubmission_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field.
-        $mform->addElement('text', 'name', get_string('ocrsubmissionname', 'mod_ocrsubmission'), ['size' => '64']);
+        $mform->addElement('text', 'name', get_string('landingocractivityname', 'mod_landingocractivity'), ['size' => '64']);
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -55,7 +55,7 @@ class mod_ocrsubmission_mod_form extends moodleform_mod {
         }
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'ocrsubmissionname', 'mod_ocrsubmission');
+        $mform->addHelpButton('name', 'landingocractivityname', 'mod_landingocractivity');
 
         // Adding the standard "intro" and "introformat" fields.
         if ($CFG->branch >= 29) {
@@ -65,17 +65,17 @@ class mod_ocrsubmission_mod_form extends moodleform_mod {
         }
 
         // LandingAI API settings.
-        $mform->addElement('header', 'landingaisettings', get_string('landingaisettings', 'mod_ocrsubmission'));
+        $mform->addElement('header', 'landingaisettings', get_string('landingaisettings', 'mod_landingocractivity'));
 
         $mform->addElement(
             'passwordunmask',
             'apikey',
-            get_string('apikey', 'mod_ocrsubmission'),
+            get_string('apikey', 'mod_landingocractivity'),
             ['size' => '64']
         );
         $mform->setType('apikey', PARAM_RAW_TRIMMED);
         $mform->addRule('apikey', null, 'required', null, 'client');
-        $mform->addHelpButton('apikey', 'apikey', 'mod_ocrsubmission');
+        $mform->addHelpButton('apikey', 'apikey', 'mod_landingocractivity');
 
         // Add standard grading elements.
         $this->standard_grading_coursemodule_elements();
@@ -98,7 +98,7 @@ class mod_ocrsubmission_mod_form extends moodleform_mod {
         $errors = parent::validation($data, $files);
 
         if (empty($data['apikey'])) {
-            $errors['apikey'] = get_string('apikeyerror', 'mod_ocrsubmission');
+            $errors['apikey'] = get_string('apikeyerror', 'mod_landingocractivity');
         }
 
         return $errors;

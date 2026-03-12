@@ -15,21 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The task that provides the complete moodle2 restore implementation for ocrsubmission.
+ * The task that provides the complete moodle2 restore implementation for landingocractivity.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/ocrsubmission/backup/moodle2/restore_ocrsubmission_stepslib.php');
+require_once($CFG->dirroot . '/mod/landingocractivity/backup/moodle2/restore_landingocractivity_stepslib.php');
 
 /**
- * ocrsubmission restore task.
+ * landingocractivity restore task.
  */
-class restore_ocrsubmission_activity_task extends restore_activity_task {
+class restore_landingocractivity_activity_task extends restore_activity_task {
 
     /**
      * Define (add) particular settings this activity can have.
@@ -41,7 +41,7 @@ class restore_ocrsubmission_activity_task extends restore_activity_task {
      * Define (add) particular steps this activity can have.
      */
     protected function define_my_steps(): void {
-        $this->add_step(new restore_ocrsubmission_activity_structure_step('ocrsubmission_structure', 'ocrsubmission.xml'));
+        $this->add_step(new restore_landingocractivity_activity_structure_step('landingocractivity_structure', 'landingocractivity.xml'));
     }
 
     /**
@@ -51,7 +51,7 @@ class restore_ocrsubmission_activity_task extends restore_activity_task {
      */
     public static function define_decode_contents(): array {
         return [
-            new restore_decode_content('ocrsubmission', ['intro'], 'ocrsubmission'),
+            new restore_decode_content('landingocractivity', ['intro'], 'landingocractivity'),
         ];
     }
 
@@ -62,20 +62,20 @@ class restore_ocrsubmission_activity_task extends restore_activity_task {
      */
     public static function define_decode_rules(): array {
         return [
-            new restore_decode_rule('OCRSUBMISSIONVIEWBYID', '/mod/ocrsubmission/view.php?id=$1', 'course_module'),
-            new restore_decode_rule('OCRSUBMISSIONINDEX', '/mod/ocrsubmission/index.php?id=$1', 'course'),
+            new restore_decode_rule('LANDINGOCRACTIVITYVIEWBYID', '/mod/landingocractivity/view.php?id=$1', 'course_module'),
+            new restore_decode_rule('LANDINGOCRACTIVITYINDEX', '/mod/landingocractivity/index.php?id=$1', 'course'),
         ];
     }
 
     /**
      * Define the restore log rules that will be applied by the restore_logs_processor
-     * when restoring ocrsubmission logs. It must return one array of restore_log_rule objects.
+     * when restoring landingocractivity logs. It must return one array of restore_log_rule objects.
      *
      * @return restore_log_rule[]
      */
     public static function define_restore_log_rules(): array {
         return [
-            new restore_log_rule('ocrsubmission', 'view', 'view.php?id={course_module}', '{ocrsubmission}'),
+            new restore_log_rule('landingocractivity', 'view', 'view.php?id={course_module}', '{landingocractivity}'),
         ];
     }
 
@@ -87,7 +87,7 @@ class restore_ocrsubmission_activity_task extends restore_activity_task {
      */
     public static function define_restore_log_rules_for_course(): array {
         return [
-            new restore_log_rule('ocrsubmission', 'view all', 'index.php?id={course}', null),
+            new restore_log_rule('landingocractivity', 'view all', 'index.php?id={course}', null),
         ];
     }
 }

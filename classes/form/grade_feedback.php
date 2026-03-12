@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Grade feedback form for ocrsubmission.
+ * Grade feedback form for landingocractivity.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_ocrsubmission\form;
+namespace mod_landingocractivity\form;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -31,7 +31,7 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Grade feedback form.
  *
- * @package    mod_ocrsubmission
+ * @package    mod_landingocractivity
  * @copyright  2024, LandingAI OCR Submission
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -45,7 +45,7 @@ class grade_feedback extends \moodleform {
         $maxgrade = $this->_customdata['maxgrade'] ?? 100;
 
         // Grade field.
-        $mform->addElement('text', 'grade', get_string('grade', 'mod_ocrsubmission'));
+        $mform->addElement('text', 'grade', get_string('grade', 'mod_landingocractivity'));
         $mform->setType('grade', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('grade', 'grade', 'grades');
 
@@ -53,7 +53,7 @@ class grade_feedback extends \moodleform {
         $mform->addElement(
             'editor',
             'feedback_editor',
-            get_string('feedback', 'mod_ocrsubmission'),
+            get_string('feedback', 'mod_landingocractivity'),
             null,
             [
                 'maxfiles'  => 0,
@@ -63,7 +63,7 @@ class grade_feedback extends \moodleform {
             ]
         );
         $mform->setType('feedback_editor', PARAM_RAW);
-        $mform->addHelpButton('feedback_editor', 'feedback', 'mod_ocrsubmission');
+        $mform->addHelpButton('feedback_editor', 'feedback', 'mod_landingocractivity');
 
         // Hidden fields.
         $mform->addElement('hidden', 'cmid', $this->_customdata['cmid'] ?? 0);
@@ -75,7 +75,7 @@ class grade_feedback extends \moodleform {
         $mform->addElement('hidden', 'maxgrade', $maxgrade);
         $mform->setType('maxgrade', PARAM_INT);
 
-        $this->add_action_buttons(true, get_string('savefeedback', 'mod_ocrsubmission'));
+        $this->add_action_buttons(true, get_string('savefeedback', 'mod_landingocractivity'));
     }
 
     /**
@@ -93,11 +93,11 @@ class grade_feedback extends \moodleform {
 
         if ($grade !== '' && $grade !== null) {
             if (!is_numeric($grade)) {
-                $errors['grade'] = get_string('gradeerror', 'mod_ocrsubmission', $maxgrade);
+                $errors['grade'] = get_string('gradeerror', 'mod_landingocractivity', $maxgrade);
             } else {
                 $gradenum = (float) $grade;
                 if ($gradenum < 0 || $gradenum > $maxgrade) {
-                    $errors['grade'] = get_string('gradeerror', 'mod_ocrsubmission', $maxgrade);
+                    $errors['grade'] = get_string('gradeerror', 'mod_landingocractivity', $maxgrade);
                 }
             }
         }

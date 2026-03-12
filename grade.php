@@ -15,15 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Grade redirect for ocrsubmission.
+ * Grade redirect for landingocractivity.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once('../../config.php');
-require_once($CFG->dirroot . '/mod/ocrsubmission/lib.php');
+require_once($CFG->dirroot . '/mod/landingocractivity/lib.php');
 
 $id     = optional_param('id', 0, PARAM_INT);
 $userid = optional_param('userid', 0, PARAM_INT);
@@ -31,7 +31,7 @@ $offset = optional_param('offset', 0, PARAM_INT);
 $itemnumber = optional_param('itemnumber', 0, PARAM_INT);
 
 if ($id) {
-    $cm     = get_coursemodule_from_id('ocrsubmission', $id, 0, false, MUST_EXIST);
+    $cm     = get_coursemodule_from_id('landingocractivity', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 } else {
     throw new moodle_exception('invalidcmid');
@@ -44,4 +44,4 @@ if ($userid) {
     $params['userid'] = $userid;
 }
 
-redirect(new moodle_url('/mod/ocrsubmission/view.php', $params));
+redirect(new moodle_url('/mod/landingocractivity/view.php', $params));

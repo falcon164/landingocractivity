@@ -17,19 +17,19 @@
 /**
  * Adhoc task to process OCR on a submitted document via LandingAI API.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_ocrsubmission\task;
+namespace mod_landingocractivity\task;
 
 use core\task\adhoc_task;
 
 /**
  * Process OCR task - calls LandingAI Document Analysis API.
  *
- * @package    mod_ocrsubmission
+ * @package    mod_landingocractivity
  * @copyright  2024, LandingAI OCR Submission
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -44,7 +44,7 @@ class process_ocr extends adhoc_task {
      * @return string
      */
     public function get_name(): string {
-        return get_string('ocrprocessing', 'mod_ocrsubmission');
+        return get_string('ocrprocessing', 'mod_landingocractivity');
     }
 
     /**
@@ -60,38 +60,38 @@ class process_ocr extends adhoc_task {
         }
 
         $submissionid = (int) $data->submissionid;
-        $submission = $DB->get_record('ocrsubmission_submissions', ['id' => $submissionid]);
+        $submission = $DB->get_record('landingocractivity_submissions', ['id' => $submissionid]);
 
         if (!$submission) {
             mtrace("process_ocr task: submission {$submissionid} not found.");
             return;
         }
 
-        // Get the ocrsubmission instance to retrieve the API key.
-        $ocrsubmission = $DB->get_record('ocrsubmission', ['id' => $submission->ocrsubmissionid]);
-        if (!$ocrsubmission) {
-            mtrace("process_ocr task: ocrsubmission instance {$submission->ocrsubmissionid} not found.");
+        // Get the landingocractivity instance to retrieve the API key.
+        $landingocractivity = $DB->get_record('landingocractivity', ['id' => $submission->landingocractivityid]);
+        if (!$landingocractivity) {
+            mtrace("process_ocr task: landingocractivity instance {$submission->landingocractivityid} not found.");
             $this->mark_error($submission, 'Activity configuration not found.');
             return;
         }
 
-        if (empty($ocrsubmission->apikey)) {
-            mtrace("process_ocr task: no API key configured for ocrsubmission {$ocrsubmission->id}.");
+        if (empty($landingocractivity->apikey)) {
+            mtrace("process_ocr task: no API key configured for landingocractivity {$landingocractivity->id}.");
             $this->mark_error($submission, 'LandingAI API key not configured.');
             return;
         }
 
         // Mark as processing.
-        $DB->set_field('ocrsubmission_submissions', 'status', 'processing', ['id' => $submissionid]);
+        $DB->set_field('landingocractivity_submissions', 'status', 'processing', ['id' => $submissionid]);
 
         // Get the stored file.
         $fs = get_file_storage();
-        $cm = get_coursemodule_from_instance('ocrsubmission', $ocrsubmission->id, $ocrsubmission->course, false, MUST_EXIST);
+        $cm = get_coursemodule_from_instance('landingocractivity', $landingocractivity->id, $landingocractivity->course, false, MUST_EXIST);
         $context = \context_module::instance($cm->id);
 
         $files = $fs->get_area_files(
             $context->id,
-            'mod_ocrsubmission',
+            'mod_landingocractivity',
             'submission',
             $submissionid,
             'id DESC',
@@ -108,7 +108,7 @@ class process_ocr extends adhoc_task {
 
         // Perform the OCR API call.
         try {
-            $ocrtext = $this->call_landingai_api($file, $ocrsubmission->apikey);
+            $ocrtext = $this->call_landingai_api($file, $landingocractivity->apikey);
         } catch (\Exception $e) {
             mtrace("process_ocr task: API call failed for submission {$submissionid}: " . $e->getMessage());
             $this->mark_error($submission, $e->getMessage());
@@ -122,7 +122,7 @@ class process_ocr extends adhoc_task {
         $record->ocr_text     = $ocrtext;
         $record->error_message = null;
         $record->timemodified = time();
-        $DB->update_record('ocrsubmission_submissions', $record);
+        $DB->update_record('landingocractivity_submissions', $record);
 
         mtrace("process_ocr task: submission {$submissionid} processed successfully.");
     }
@@ -137,7 +137,7 @@ class process_ocr extends adhoc_task {
      */
     protected function call_landingai_api(\stored_file $file, string $apikey): string {
         // Write the file to a temp path for upload.
-        $tmpfile = make_temp_directory('ocrsubmission') . '/' . $file->get_filename();
+        $tmpfile = make_temp_directory('landingocractivity') . '/' . $file->get_filename();
         $file->copy_content_to($tmpfile);
 
         $mimetype = $file->get_mimetype();
@@ -167,7 +167,7 @@ class process_ocr extends adhoc_task {
             if ($httpcode !== 200) {
                 throw new \moodle_exception(
                     'error',
-                    'mod_ocrsubmission',
+                    'mod_landingocractivity',
                     '',
                     "LandingAI API returned HTTP {$httpcode}: {$response}"
                 );
@@ -177,7 +177,7 @@ class process_ocr extends adhoc_task {
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new \moodle_exception(
                     'error',
-                    'mod_ocrsubmission',
+                    'mod_landingocractivity',
                     '',
                     'Invalid JSON response from LandingAI API.'
                 );
@@ -242,7 +242,7 @@ class process_ocr extends adhoc_task {
         // If none of the above, return a JSON dump for debugging.
         throw new \moodle_exception(
             'error',
-            'mod_ocrsubmission',
+            'mod_landingocractivity',
             '',
             'Unable to extract text from LandingAI API response. Response: ' . json_encode($response)
         );
@@ -262,6 +262,6 @@ class process_ocr extends adhoc_task {
         $record->status        = 'error';
         $record->error_message = $message;
         $record->timemodified  = time();
-        $DB->update_record('ocrsubmission_submissions', $record);
+        $DB->update_record('landingocractivity_submissions', $record);
     }
 }

@@ -15,34 +15,34 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Student document submission page for ocrsubmission.
+ * Student document submission page for landingocractivity.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once('../../config.php');
-require_once($CFG->dirroot . '/mod/ocrsubmission/lib.php');
+require_once($CFG->dirroot . '/mod/landingocractivity/lib.php');
 require_once($CFG->libdir . '/filelib.php');
 
 $id = required_param('id', PARAM_INT);
 
-$cm     = get_coursemodule_from_id('ocrsubmission', $id, 0, false, MUST_EXIST);
+$cm     = get_coursemodule_from_id('landingocractivity', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
-$ocrsubmission = $DB->get_record('ocrsubmission', ['id' => $cm->instance], '*', MUST_EXIST);
+$landingocractivity = $DB->get_record('landingocractivity', ['id' => $cm->instance], '*', MUST_EXIST);
 
 require_login($course, true, $cm);
 
 $context = context_module::instance($cm->id);
-require_capability('mod/ocrsubmission:submit', $context);
+require_capability('mod/landingocractivity:submit', $context);
 
-$PAGE->set_url('/mod/ocrsubmission/submit.php', ['id' => $cm->id]);
-$PAGE->set_title(format_string($ocrsubmission->name) . ': ' . get_string('submitdocument', 'mod_ocrsubmission'));
+$PAGE->set_url('/mod/landingocractivity/submit.php', ['id' => $cm->id]);
+$PAGE->set_title(format_string($landingocractivity->name) . ': ' . get_string('submitdocument', 'mod_landingocractivity'));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-$viewurl = new moodle_url('/mod/ocrsubmission/view.php', ['id' => $cm->id]);
+$viewurl = new moodle_url('/mod/landingocractivity/view.php', ['id' => $cm->id]);
 
 // Handle form submission.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate uploaded file.
     if (empty($_FILES['submissionfile']['name'])) {
-        redirect($viewurl, get_string('nofilesubmitted', 'mod_ocrsubmission'), null, \core\output\notification::NOTIFY_ERROR);
+        redirect($viewurl, get_string('nofilesubmitted', 'mod_landingocractivity'), null, \core\output\notification::NOTIFY_ERROR);
     }
 
     $uploadedfile = $_FILES['submissionfile'];
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $allowedexts = ['jpg', 'jpeg', 'pdf'];
     if (!in_array($ext, $allowedexts)) {
-        redirect($viewurl, get_string('filetypeerror', 'mod_ocrsubmission'), null, \core\output\notification::NOTIFY_ERROR);
+        redirect($viewurl, get_string('filetypeerror', 'mod_landingocractivity'), null, \core\output\notification::NOTIFY_ERROR);
     }
 
     if ($uploadedfile['error'] !== UPLOAD_ERR_OK) {
@@ -67,8 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Check if student already has a submission.
-    $existing = $DB->get_record('ocrsubmission_submissions', [
-        'ocrsubmissionid' => $ocrsubmission->id,
+    $existing = $DB->get_record('landingocractivity_submissions', [
+        'landingocractivityid' => $landingocractivity->id,
         'userid'          => $USER->id,
     ]);
 
@@ -81,29 +81,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $submission->ocr_text      = null;
         $submission->error_message = null;
         $submission->timemodified  = time();
-        $DB->update_record('ocrsubmission_submissions', $submission);
+        $DB->update_record('landingocractivity_submissions', $submission);
     } else {
         // Create new submission.
         $submission = new stdClass();
-        $submission->ocrsubmissionid = $ocrsubmission->id;
+        $submission->landingocractivityid = $landingocractivity->id;
         $submission->userid          = $USER->id;
         $submission->status          = 'pending';
         $submission->ocr_text        = null;
         $submission->error_message   = null;
         $submission->timecreated     = time();
         $submission->timemodified    = time();
-        $submission->id = $DB->insert_record('ocrsubmission_submissions', $submission);
+        $submission->id = $DB->insert_record('landingocractivity_submissions', $submission);
     }
 
     // Store the file in Moodle's file storage.
     $fs = get_file_storage();
 
     // Delete any previously uploaded file for this submission.
-    $fs->delete_area_files($context->id, 'mod_ocrsubmission', 'submission', $submission->id);
+    $fs->delete_area_files($context->id, 'mod_landingocractivity', 'submission', $submission->id);
 
     $filerecord = [
         'contextid' => $context->id,
-        'component' => 'mod_ocrsubmission',
+        'component' => 'mod_landingocractivity',
         'filearea'  => 'submission',
         'itemid'    => $submission->id,
         'filepath'  => '/',
@@ -129,69 +129,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $storedfile = $fs->create_file_from_pathname($filerecord, $uploadedfile['tmp_name']);
 
     // Queue the OCR adhoc task.
-    $task = new \mod_ocrsubmission\task\process_ocr();
+    $task = new \mod_landingocractivity\task\process_ocr();
     $task->set_custom_data(['submissionid' => $submission->id]);
     \core\task\manager::queue_adhoc_task($task, true);
 
     // Fire event.
-    $event = \mod_ocrsubmission\event\submission_uploaded::create([
+    $event = \mod_landingocractivity\event\submission_uploaded::create([
         'objectid' => $submission->id,
         'context'  => $context,
     ]);
     $event->trigger();
 
     $message = $isnew
-        ? get_string('submissionsuccess', 'mod_ocrsubmission')
-        : get_string('submissionupdated', 'mod_ocrsubmission');
+        ? get_string('submissionsuccess', 'mod_landingocractivity')
+        : get_string('submissionupdated', 'mod_landingocractivity');
 
     redirect($viewurl, $message, null, \core\output\notification::NOTIFY_SUCCESS);
 }
 
 // Show the upload form.
 echo $OUTPUT->header();
-echo $OUTPUT->heading(format_string($ocrsubmission->name));
-echo $OUTPUT->heading(get_string('submitdocument', 'mod_ocrsubmission'), 3);
+echo $OUTPUT->heading(format_string($landingocractivity->name));
+echo $OUTPUT->heading(get_string('submitdocument', 'mod_landingocractivity'), 3);
 
-if ($ocrsubmission->intro) {
+if ($landingocractivity->intro) {
     echo $OUTPUT->box(
-        format_module_intro('ocrsubmission', $ocrsubmission, $cm->id),
+        format_module_intro('landingocractivity', $landingocractivity, $cm->id),
         'generalbox mod_introbox'
     );
 }
 
 // Check for existing submission and show status.
-$existingsubmission = $DB->get_record('ocrsubmission_submissions', [
-    'ocrsubmissionid' => $ocrsubmission->id,
+$existingsubmission = $DB->get_record('landingocractivity_submissions', [
+    'landingocractivityid' => $landingocractivity->id,
     'userid'          => $USER->id,
 ]);
 
 if ($existingsubmission) {
     echo $OUTPUT->notification(
-        get_string('ocrstatus', 'mod_ocrsubmission') . ': '
-        . get_string('ocrstatus_' . $existingsubmission->status, 'mod_ocrsubmission'),
+        get_string('ocrstatus', 'mod_landingocractivity') . ': '
+        . get_string('ocrstatus_' . $existingsubmission->status, 'mod_landingocractivity'),
         'info'
     );
 }
 
-$formurl = new moodle_url('/mod/ocrsubmission/submit.php', ['id' => $cm->id]);
+$formurl = new moodle_url('/mod/landingocractivity/submit.php', ['id' => $cm->id]);
 
 echo html_writer::start_tag('form', [
     'method'  => 'post',
     'action'  => $formurl->out(false),
     'enctype' => 'multipart/form-data',
-    'class'   => 'ocrsubmission-upload-form',
+    'class'   => 'landingocractivity-upload-form',
 ]);
 
 echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
 
 echo html_writer::start_div('mb-3');
-echo html_writer::tag('label', get_string('submitdocument', 'mod_ocrsubmission'), [
+echo html_writer::tag('label', get_string('submitdocument', 'mod_landingocractivity'), [
     'for'   => 'submissionfile',
     'class' => 'form-label fw-bold',
 ]);
 echo html_writer::tag(
     'p',
-    get_string('submitdocument_help', 'mod_ocrsubmission'),
+    get_string('submitdocument_help', 'mod_landingocractivity'),
     ['class' => 'text-muted small']
 );
 echo html_writer::empty_tag('input', [
@@ -203,7 +203,7 @@ echo html_writer::empty_tag('input', [
 ]);
 echo html_writer::end_div();
 
-echo html_writer::tag('button', get_string('submitfile', 'mod_ocrsubmission'), [
+echo html_writer::tag('button', get_string('submitfile', 'mod_landingocractivity'), [
     'type'  => 'submit',
     'class' => 'btn btn-primary',
 ]);

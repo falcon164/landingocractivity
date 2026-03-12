@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy API implementation for the ocrsubmission module.
+ * Privacy API implementation for the landingocractivity module.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_ocrsubmission\privacy;
+namespace mod_landingocractivity\privacy;
 
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
@@ -34,9 +34,9 @@ use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
 /**
- * Privacy Subsystem implementation for mod_ocrsubmission.
+ * Privacy Subsystem implementation for mod_landingocractivity.
  *
- * @package    mod_ocrsubmission
+ * @package    mod_landingocractivity
  * @copyright  2024, LandingAI OCR Submission
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -53,26 +53,26 @@ class provider implements
      */
     public static function get_metadata(collection $collection): collection {
         $collection->add_database_table(
-            'ocrsubmission_submissions',
+            'landingocractivity_submissions',
             [
-                'userid'      => 'privacy:metadata:ocrsubmission_submissions:userid',
-                'ocr_text'    => 'privacy:metadata:ocrsubmission_submissions:ocr_text',
-                'status'      => 'privacy:metadata:ocrsubmission_submissions:status',
-                'timecreated' => 'privacy:metadata:ocrsubmission_submissions:timecreated',
+                'userid'      => 'privacy:metadata:landingocractivity_submissions:userid',
+                'ocr_text'    => 'privacy:metadata:landingocractivity_submissions:ocr_text',
+                'status'      => 'privacy:metadata:landingocractivity_submissions:status',
+                'timecreated' => 'privacy:metadata:landingocractivity_submissions:timecreated',
             ],
-            'privacy:metadata:ocrsubmission_submissions'
+            'privacy:metadata:landingocractivity_submissions'
         );
 
         $collection->add_database_table(
-            'ocrsubmission_grades',
+            'landingocractivity_grades',
             [
-                'userid'     => 'privacy:metadata:ocrsubmission_grades:userid',
-                'grade'      => 'privacy:metadata:ocrsubmission_grades:grade',
-                'feedback'   => 'privacy:metadata:ocrsubmission_grades:feedback',
-                'grader'     => 'privacy:metadata:ocrsubmission_grades:grader',
-                'timegraded' => 'privacy:metadata:ocrsubmission_grades:timegraded',
+                'userid'     => 'privacy:metadata:landingocractivity_grades:userid',
+                'grade'      => 'privacy:metadata:landingocractivity_grades:grade',
+                'feedback'   => 'privacy:metadata:landingocractivity_grades:feedback',
+                'grader'     => 'privacy:metadata:landingocractivity_grades:grader',
+                'timegraded' => 'privacy:metadata:landingocractivity_grades:timegraded',
             ],
-            'privacy:metadata:ocrsubmission_grades'
+            'privacy:metadata:landingocractivity_grades'
         );
 
         $collection->add_external_location_link(
@@ -98,16 +98,16 @@ class provider implements
         $sql = "SELECT ctx.id
                   FROM {context} ctx
                   JOIN {course_modules} cm ON cm.id = ctx.instanceid AND ctx.contextlevel = :contextlevel
-                  JOIN {modules} m ON m.id = cm.module AND m.name = 'ocrsubmission'
-                  JOIN {ocrsubmission_submissions} os ON os.ocrsubmissionid = cm.instance
+                  JOIN {modules} m ON m.id = cm.module AND m.name = 'landingocractivity'
+                  JOIN {landingocractivity_submissions} os ON os.landingocractivityid = cm.instance
                  WHERE os.userid = :userid";
         $contextlist->add_from_sql($sql, ['contextlevel' => CONTEXT_MODULE, 'userid' => $userid]);
 
         $sql = "SELECT ctx.id
                   FROM {context} ctx
                   JOIN {course_modules} cm ON cm.id = ctx.instanceid AND ctx.contextlevel = :contextlevel
-                  JOIN {modules} m ON m.id = cm.module AND m.name = 'ocrsubmission'
-                  JOIN {ocrsubmission_grades} og ON og.ocrsubmissionid = cm.instance
+                  JOIN {modules} m ON m.id = cm.module AND m.name = 'landingocractivity'
+                  JOIN {landingocractivity_grades} og ON og.landingocractivityid = cm.instance
                  WHERE og.userid = :userid";
         $contextlist->add_from_sql($sql, ['contextlevel' => CONTEXT_MODULE, 'userid' => $userid]);
 
@@ -132,15 +132,15 @@ class provider implements
         ];
 
         $sql = "SELECT os.userid
-                  FROM {ocrsubmission_submissions} os
-                  JOIN {course_modules} cm ON cm.instance = os.ocrsubmissionid
+                  FROM {landingocractivity_submissions} os
+                  JOIN {course_modules} cm ON cm.instance = os.landingocractivityid
                   JOIN {context} ctx ON ctx.instanceid = cm.id AND ctx.contextlevel = :contextlevel
                  WHERE ctx.id = :contextid";
         $userlist->add_from_sql('userid', $sql, $params);
 
         $sql = "SELECT og.userid
-                  FROM {ocrsubmission_grades} og
-                  JOIN {course_modules} cm ON cm.instance = og.ocrsubmissionid
+                  FROM {landingocractivity_grades} og
+                  JOIN {course_modules} cm ON cm.instance = og.landingocractivityid
                   JOIN {context} ctx ON ctx.instanceid = cm.id AND ctx.contextlevel = :contextlevel
                  WHERE ctx.id = :contextid";
         $userlist->add_from_sql('userid', $sql, $params);
@@ -161,14 +161,14 @@ class provider implements
                 continue;
             }
 
-            $cm = get_coursemodule_from_id('ocrsubmission', $context->instanceid);
+            $cm = get_coursemodule_from_id('landingocractivity', $context->instanceid);
             if (!$cm) {
                 continue;
             }
 
             // Export submission.
-            $submission = $DB->get_record('ocrsubmission_submissions', [
-                'ocrsubmissionid' => $cm->instance,
+            $submission = $DB->get_record('landingocractivity_submissions', [
+                'landingocractivityid' => $cm->instance,
                 'userid' => $userid,
             ]);
             if ($submission) {
@@ -183,15 +183,15 @@ class provider implements
                 // Export associated files.
                 writer::with_context($context)->export_area_files(
                     ['submission'],
-                    'mod_ocrsubmission',
+                    'mod_landingocractivity',
                     'submission',
                     $submission->id
                 );
             }
 
             // Export grade/feedback.
-            $grade = $DB->get_record('ocrsubmission_grades', [
-                'ocrsubmissionid' => $cm->instance,
+            $grade = $DB->get_record('landingocractivity_grades', [
+                'landingocractivityid' => $cm->instance,
                 'userid' => $userid,
             ]);
             if ($grade) {
@@ -217,19 +217,19 @@ class provider implements
             return;
         }
 
-        $cm = get_coursemodule_from_id('ocrsubmission', $context->instanceid);
+        $cm = get_coursemodule_from_id('landingocractivity', $context->instanceid);
         if (!$cm) {
             return;
         }
 
-        $submissions = $DB->get_records('ocrsubmission_submissions', ['ocrsubmissionid' => $cm->instance]);
+        $submissions = $DB->get_records('landingocractivity_submissions', ['landingocractivityid' => $cm->instance]);
         foreach ($submissions as $submission) {
             $fs = get_file_storage();
-            $fs->delete_area_files($context->id, 'mod_ocrsubmission', 'submission', $submission->id);
+            $fs->delete_area_files($context->id, 'mod_landingocractivity', 'submission', $submission->id);
         }
 
-        $DB->delete_records('ocrsubmission_submissions', ['ocrsubmissionid' => $cm->instance]);
-        $DB->delete_records('ocrsubmission_grades', ['ocrsubmissionid' => $cm->instance]);
+        $DB->delete_records('landingocractivity_submissions', ['landingocractivityid' => $cm->instance]);
+        $DB->delete_records('landingocractivity_grades', ['landingocractivityid' => $cm->instance]);
     }
 
     /**
@@ -247,23 +247,23 @@ class provider implements
                 continue;
             }
 
-            $cm = get_coursemodule_from_id('ocrsubmission', $context->instanceid);
+            $cm = get_coursemodule_from_id('landingocractivity', $context->instanceid);
             if (!$cm) {
                 continue;
             }
 
-            $submission = $DB->get_record('ocrsubmission_submissions', [
-                'ocrsubmissionid' => $cm->instance,
+            $submission = $DB->get_record('landingocractivity_submissions', [
+                'landingocractivityid' => $cm->instance,
                 'userid' => $userid,
             ]);
             if ($submission) {
                 $fs = get_file_storage();
-                $fs->delete_area_files($context->id, 'mod_ocrsubmission', 'submission', $submission->id);
-                $DB->delete_records('ocrsubmission_submissions', ['id' => $submission->id]);
+                $fs->delete_area_files($context->id, 'mod_landingocractivity', 'submission', $submission->id);
+                $DB->delete_records('landingocractivity_submissions', ['id' => $submission->id]);
             }
 
-            $DB->delete_records('ocrsubmission_grades', [
-                'ocrsubmissionid' => $cm->instance,
+            $DB->delete_records('landingocractivity_grades', [
+                'landingocractivityid' => $cm->instance,
                 'userid' => $userid,
             ]);
         }
@@ -282,7 +282,7 @@ class provider implements
             return;
         }
 
-        $cm = get_coursemodule_from_id('ocrsubmission', $context->instanceid);
+        $cm = get_coursemodule_from_id('landingocractivity', $context->instanceid);
         if (!$cm) {
             return;
         }
@@ -295,25 +295,25 @@ class provider implements
         list($insql, $inparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
 
         $submissions = $DB->get_records_select(
-            'ocrsubmission_submissions',
-            "ocrsubmissionid = :instanceid AND userid {$insql}",
+            'landingocractivity_submissions',
+            "landingocractivityid = :instanceid AND userid {$insql}",
             array_merge(['instanceid' => $cm->instance], $inparams)
         );
 
         $fs = get_file_storage();
         foreach ($submissions as $submission) {
-            $fs->delete_area_files($context->id, 'mod_ocrsubmission', 'submission', $submission->id);
+            $fs->delete_area_files($context->id, 'mod_landingocractivity', 'submission', $submission->id);
         }
 
         $DB->delete_records_select(
-            'ocrsubmission_submissions',
-            "ocrsubmissionid = :instanceid AND userid {$insql}",
+            'landingocractivity_submissions',
+            "landingocractivityid = :instanceid AND userid {$insql}",
             array_merge(['instanceid' => $cm->instance], $inparams)
         );
 
         $DB->delete_records_select(
-            'ocrsubmission_grades',
-            "ocrsubmissionid = :instanceid AND userid {$insql}",
+            'landingocractivity_grades',
+            "landingocractivityid = :instanceid AND userid {$insql}",
             array_merge(['instanceid' => $cm->instance], $inparams)
         );
     }

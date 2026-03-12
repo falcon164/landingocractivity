@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Define all the restore steps that will be used by the restore_ocrsubmission_activity_task.
+ * Define all the restore steps that will be used by the restore_landingocractivity_activity_task.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,9 +25,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Structure step to restore one ocrsubmission activity.
+ * Structure step to restore one landingocractivity activity.
  */
-class restore_ocrsubmission_activity_structure_step extends restore_activity_structure_step {
+class restore_landingocractivity_activity_structure_step extends restore_activity_structure_step {
 
     /**
      * Define the structure of the restore workflow.
@@ -38,16 +38,16 @@ class restore_ocrsubmission_activity_structure_step extends restore_activity_str
         $paths = [];
         $userinfo = $this->get_setting_value('userinfo');
 
-        $paths[] = new restore_path_element('ocrsubmission', '/activity/ocrsubmission');
+        $paths[] = new restore_path_element('landingocractivity', '/activity/landingocractivity');
 
         if ($userinfo) {
             $paths[] = new restore_path_element(
-                'ocrsubmission_submission',
-                '/activity/ocrsubmission/submissions/submission'
+                'landingocractivity_submission',
+                '/activity/landingocractivity/submissions/submission'
             );
             $paths[] = new restore_path_element(
-                'ocrsubmission_grade',
-                '/activity/ocrsubmission/grades/grade'
+                'landingocractivity_grade',
+                '/activity/landingocractivity/grades/grade'
             );
         }
 
@@ -55,11 +55,11 @@ class restore_ocrsubmission_activity_structure_step extends restore_activity_str
     }
 
     /**
-     * Process the ocrsubmission element.
+     * Process the landingocractivity element.
      *
      * @param array $data Restore data.
      */
-    protected function process_ocrsubmission(array $data): void {
+    protected function process_landingocractivity(array $data): void {
         global $DB;
 
         $data = (object) $data;
@@ -70,7 +70,7 @@ class restore_ocrsubmission_activity_structure_step extends restore_activity_str
         // Note: apikey is intentionally not backed up/restored for security.
         $data->apikey = '';
 
-        $newid = $DB->insert_record('ocrsubmission', $data);
+        $newid = $DB->insert_record('landingocractivity', $data);
         $this->apply_activity_instance($newid);
     }
 
@@ -79,19 +79,19 @@ class restore_ocrsubmission_activity_structure_step extends restore_activity_str
      *
      * @param array $data Restore data.
      */
-    protected function process_ocrsubmission_submission(array $data): void {
+    protected function process_landingocractivity_submission(array $data): void {
         global $DB;
 
         $data = (object) $data;
         $oldid = $data->id;
 
-        $data->ocrsubmissionid = $this->get_new_parentid('ocrsubmission');
+        $data->landingocractivityid = $this->get_new_parentid('landingocractivity');
         $data->userid          = $this->get_mappingid('user', $data->userid);
         $data->timecreated     = $this->apply_date_offset($data->timecreated);
         $data->timemodified    = $this->apply_date_offset($data->timemodified);
 
-        $newid = $DB->insert_record('ocrsubmission_submissions', $data);
-        $this->set_mapping('ocrsubmission_submission', $oldid, $newid, true);
+        $newid = $DB->insert_record('landingocractivity_submissions', $data);
+        $this->set_mapping('landingocractivity_submission', $oldid, $newid, true);
     }
 
     /**
@@ -99,26 +99,26 @@ class restore_ocrsubmission_activity_structure_step extends restore_activity_str
      *
      * @param array $data Restore data.
      */
-    protected function process_ocrsubmission_grade(array $data): void {
+    protected function process_landingocractivity_grade(array $data): void {
         global $DB;
 
         $data = (object) $data;
 
-        $data->ocrsubmissionid = $this->get_new_parentid('ocrsubmission');
+        $data->landingocractivityid = $this->get_new_parentid('landingocractivity');
         $data->userid          = $this->get_mappingid('user', $data->userid);
         $data->grader          = $this->get_mappingid('user', $data->grader);
         $data->timegraded      = $this->apply_date_offset($data->timegraded);
         $data->timemodified    = $this->apply_date_offset($data->timemodified);
 
-        $DB->insert_record('ocrsubmission_grades', $data);
+        $DB->insert_record('landingocractivity_grades', $data);
     }
 
     /**
      * Post-execution actions.
      */
     protected function after_execute(): void {
-        // Add ocrsubmission related files, no need to match by itemname (just default).
-        $this->add_related_files('mod_ocrsubmission', 'intro', null);
-        $this->add_related_files('mod_ocrsubmission', 'submission', 'ocrsubmission_submission');
+        // Add landingocractivity related files, no need to match by itemname (just default).
+        $this->add_related_files('mod_landingocractivity', 'intro', null);
+        $this->add_related_files('mod_landingocractivity', 'submission', 'landingocractivity_submission');
     }
 }

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin capabilities for the ocrsubmission module.
+ * Plugin capabilities for the landingocractivity module.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,9 +26,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
 
-    // Ability to see that the ocrsubmission exists, and the basic information
+    // Ability to see that the landingocractivity exists, and the basic information
     // about it such as the name and description.
-    'mod/ocrsubmission:view' => [
+    'mod/landingocractivity:view' => [
         'captype'      => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes'   => [
@@ -41,7 +41,7 @@ $capabilities = [
     ],
 
     // Ability to submit a document for OCR processing.
-    'mod/ocrsubmission:submit' => [
+    'mod/landingocractivity:submit' => [
         'riskbitmask'  => RISK_SPAM,
         'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -54,7 +54,7 @@ $capabilities = [
     ],
 
     // Ability to view all submissions and grade them.
-    'mod/ocrsubmission:grade' => [
+    'mod/landingocractivity:grade' => [
         'riskbitmask'  => RISK_PERSONAL,
         'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -66,7 +66,7 @@ $capabilities = [
     ],
 
     // Ability to view the OCR extracted text of all submissions.
-    'mod/ocrsubmission:viewocrtext' => [
+    'mod/landingocractivity:viewocrtext' => [
         'riskbitmask'  => RISK_PERSONAL,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_MODULE,

@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_ocrsubmission submission uploaded event.
+ * The mod_landingocractivity submission uploaded event.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_ocrsubmission\event;
+namespace mod_landingocractivity\event;
 
 /**
- * The mod_ocrsubmission submission uploaded event class.
+ * The mod_landingocractivity submission uploaded event class.
  *
- * @package    mod_ocrsubmission
+ * @package    mod_landingocractivity
  * @copyright  2024, LandingAI OCR Submission
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -39,7 +39,7 @@ class submission_uploaded extends \core\event\base {
     protected function init(): void {
         $this->data['crud']        = 'c';
         $this->data['edulevel']    = self::LEVEL_PARTICIPATING;
-        $this->data['objecttable'] = 'ocrsubmission_submissions';
+        $this->data['objecttable'] = 'landingocractivity_submissions';
     }
 
     /**
@@ -49,7 +49,7 @@ class submission_uploaded extends \core\event\base {
      */
     public function get_description(): string {
         return "The user with id '{$this->userid}' uploaded a document submission with id "
-            . "'{$this->objectid}' to the ocrsubmission activity with course module id '{$this->contextinstanceid}'.";
+            . "'{$this->objectid}' to the landingocractivity activity with course module id '{$this->contextinstanceid}'.";
     }
 
     /**
@@ -58,7 +58,7 @@ class submission_uploaded extends \core\event\base {
      * @return string
      */
     public static function get_name(): string {
-        return get_string('eventsubmissionuploaded', 'mod_ocrsubmission');
+        return get_string('eventsubmissionuploaded', 'mod_landingocractivity');
     }
 
     /**
@@ -67,7 +67,7 @@ class submission_uploaded extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url(): \moodle_url {
-        return new \moodle_url('/mod/ocrsubmission/view.php', ['id' => $this->contextinstanceid]);
+        return new \moodle_url('/mod/landingocractivity/view.php', ['id' => $this->contextinstanceid]);
     }
 
     /**

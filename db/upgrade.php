@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Upgrade script for ocrsubmission.
+ * Upgrade script for landingocractivity.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * Execute ocrsubmission upgrade from the given old version.
+ * Execute landingocractivity upgrade from the given old version.
  *
  * @param int $oldversion Old version number.
  * @return bool Always true.
  */
-function xmldb_ocrsubmission_upgrade(int $oldversion): bool {
+function xmldb_landingocractivity_upgrade(int $oldversion): bool {
     // Future upgrade steps will be added here.
     return true;
 }

@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_ocrsubmission course module viewed event.
+ * The mod_landingocractivity course module viewed event.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_ocrsubmission\event;
+namespace mod_landingocractivity\event;
 
 /**
- * The mod_ocrsubmission course module viewed event class.
+ * The mod_landingocractivity course module viewed event class.
  *
- * @package    mod_ocrsubmission
+ * @package    mod_landingocractivity
  * @copyright  2024, LandingAI OCR Submission
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -39,7 +39,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
     protected function init(): void {
         $this->data['crud']     = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->data['objecttable'] = 'ocrsubmission';
+        $this->data['objecttable'] = 'landingocractivity';
     }
 
     /**
@@ -48,7 +48,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
      * @return string
      */
     public function get_description(): string {
-        return "The user with id '{$this->userid}' viewed the ocrsubmission activity with course module id '{$this->contextinstanceid}'.";
+        return "The user with id '{$this->userid}' viewed the landingocractivity activity with course module id '{$this->contextinstanceid}'.";
     }
 
     /**
@@ -57,6 +57,6 @@ class course_module_viewed extends \core\event\course_module_viewed {
      * @return string
      */
     public static function get_name(): string {
-        return get_string('eventcoursemoduleviewed', 'mod_ocrsubmission');
+        return get_string('eventcoursemoduleviewed', 'mod_landingocractivity');
     }
 }

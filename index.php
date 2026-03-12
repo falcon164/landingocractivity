@@ -15,15 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Index page listing all ocrsubmission instances in a course.
+ * Index page listing all landingocractivity instances in a course.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once('../../config.php');
-require_once($CFG->dirroot . '/mod/ocrsubmission/lib.php');
+require_once($CFG->dirroot . '/mod/landingocractivity/lib.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -31,19 +31,19 @@ $course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
 
 require_course_login($course);
 
-$PAGE->set_url('/mod/ocrsubmission/index.php', ['id' => $id]);
-$PAGE->set_title(format_string($course->shortname) . ': ' . get_string('modulenameplural', 'mod_ocrsubmission'));
+$PAGE->set_url('/mod/landingocractivity/index.php', ['id' => $id]);
+$PAGE->set_title(format_string($course->shortname) . ': ' . get_string('modulenameplural', 'mod_landingocractivity'));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context(context_course::instance($course->id));
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('modulenameplural', 'mod_ocrsubmission'));
+echo $OUTPUT->heading(get_string('modulenameplural', 'mod_landingocractivity'));
 
-// Get all ocrsubmission instances in this course.
-$ocrsubmissions = get_all_instances_in_course('ocrsubmission', $course);
+// Get all landingocractivity instances in this course.
+$landingocractivityinstances = get_all_instances_in_course('landingocractivity', $course);
 
-if (empty($ocrsubmissions)) {
-    notice(get_string('nosubmission', 'mod_ocrsubmission'), new moodle_url('/course/view.php', ['id' => $course->id]));
+if (empty($landingocractivityinstances)) {
+    notice(get_string('nosubmission', 'mod_landingocractivity'), new moodle_url('/course/view.php', ['id' => $course->id]));
 }
 
 $table = new html_table();
@@ -61,28 +61,28 @@ if ($usesections) {
 $modinfo     = get_fast_modinfo($course);
 $currentsection = '';
 
-foreach ($ocrsubmissions as $ocrsubmission) {
-    $cm = $modinfo->cms[$ocrsubmission->coursemodule];
+foreach ($landingocractivityinstances as $landingocractivity) {
+    $cm = $modinfo->cms[$landingocractivity->coursemodule];
 
     $link = html_writer::link(
-        new moodle_url('/mod/ocrsubmission/view.php', ['id' => $cm->id]),
-        format_string($ocrsubmission->name, true)
+        new moodle_url('/mod/landingocractivity/view.php', ['id' => $cm->id]),
+        format_string($landingocractivity->name, true)
     );
 
-    if (!$ocrsubmission->visible) {
+    if (!$landingocractivity->visible) {
         $link = html_writer::tag('span', $link, ['class' => 'dimmed_text']);
     }
 
-    $intro = format_module_intro('ocrsubmission', $ocrsubmission, $cm->id);
+    $intro = format_module_intro('landingocractivity', $landingocractivity, $cm->id);
 
     if ($usesections) {
-        if ($ocrsubmission->section !== $currentsection) {
-            if ($ocrsubmission->section) {
+        if ($landingocractivity->section !== $currentsection) {
+            if ($landingocractivity->section) {
                 $table->data[] = 'hr';
             }
-            $currentsection = $ocrsubmission->section;
+            $currentsection = $landingocractivity->section;
         }
-        $sectionname = get_section_name($course, $ocrsubmission->section);
+        $sectionname = get_section_name($course, $landingocractivity->section);
         $table->data[] = [$sectionname, $link, $intro];
     } else {
         $table->data[] = [$link, $intro];

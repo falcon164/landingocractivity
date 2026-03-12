@@ -15,21 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The task that provides the complete moodle2 backup implementation for ocrsubmission.
+ * The task that provides the complete moodle2 backup implementation for landingocractivity.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/ocrsubmission/backup/moodle2/backup_ocrsubmission_stepslib.php');
+require_once($CFG->dirroot . '/mod/landingocractivity/backup/moodle2/backup_landingocractivity_stepslib.php');
 
 /**
- * ocrsubmission backup task.
+ * landingocractivity backup task.
  */
-class backup_ocrsubmission_activity_task extends backup_activity_task {
+class backup_landingocractivity_activity_task extends backup_activity_task {
 
     /**
      * No specific settings for this activity.
@@ -38,10 +38,10 @@ class backup_ocrsubmission_activity_task extends backup_activity_task {
     }
 
     /**
-     * Defines a backup step to store the instance data in the ocrsubmission.xml file.
+     * Defines a backup step to store the instance data in the landingocractivity.xml file.
      */
     protected function define_my_steps(): void {
-        $this->add_step(new backup_ocrsubmission_activity_structure_step('ocrsubmission_structure', 'ocrsubmission.xml'));
+        $this->add_step(new backup_landingocractivity_activity_structure_step('landingocractivity_structure', 'landingocractivity.xml'));
     }
 
     /**
@@ -55,13 +55,13 @@ class backup_ocrsubmission_activity_task extends backup_activity_task {
 
         $base = preg_quote($CFG->wwwroot, '/');
 
-        // Link to the list of ocrsubmissions.
-        $search  = '/(' . $base . '\/mod\/ocrsubmission\/index\.php\?id\=)([0-9]+)/';
-        $content = preg_replace($search, '$@OCRSUBMISSIONINDEX*$2@$', $content);
+        // Link to the list of landingocractivity instances.
+        $search  = '/(' . $base . '\/mod\/landingocractivity\/index\.php\?id\=)([0-9]+)/';
+        $content = preg_replace($search, '$@LANDINGOCRACTIVITYINDEX*$2@$', $content);
 
-        // Link to ocrsubmission view by moduleid.
-        $search  = '/(' . $base . '\/mod\/ocrsubmission\/view\.php\?id\=)([0-9]+)/';
-        $content = preg_replace($search, '$@OCRSUBMISSIONVIEWBYID*$2@$', $content);
+        // Link to landingocractivity view by moduleid.
+        $search  = '/(' . $base . '\/mod\/landingocractivity\/view\.php\?id\=)([0-9]+)/';
+        $content = preg_replace($search, '$@LANDINGOCRACTIVITYVIEWBYID*$2@$', $content);
 
         return $content;
     }

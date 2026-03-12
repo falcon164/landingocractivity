@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * English strings for ocrsubmission.
+ * English strings for landingocractivity.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -32,8 +32,8 @@ $string['modulename_help']     = 'The OCR Submission activity allows students to
 $string['pluginadministration'] = 'OCR Submission administration';
 
 // Activity name.
-$string['ocrsubmissionname']      = 'Activity name';
-$string['ocrsubmissionname_help'] = 'Give this OCR Submission activity a descriptive name.';
+$string['landingocractivityname']      = 'Activity name';
+$string['landingocractivityname_help'] = 'Give this OCR Submission activity a descriptive name.';
 
 // Settings sections.
 $string['landingaisettings']   = 'LandingAI API settings';
@@ -104,16 +104,16 @@ $string['eventsubmissionuploaded']   = 'Document submission uploaded';
 $string['eventsubmissiongraded']     = 'Submission graded';
 
 // Privacy.
-$string['privacy:metadata:ocrsubmission_submissions']           = 'Information about student submissions.';
-$string['privacy:metadata:ocrsubmission_submissions:userid']    = 'The ID of the student.';
-$string['privacy:metadata:ocrsubmission_submissions:ocr_text']  = 'The OCR-extracted text from the submitted document.';
-$string['privacy:metadata:ocrsubmission_submissions:status']    = 'The processing status of the submission.';
-$string['privacy:metadata:ocrsubmission_submissions:timecreated'] = 'The time the submission was created.';
-$string['privacy:metadata:ocrsubmission_grades']                = 'Information about grades and feedback given to students.';
-$string['privacy:metadata:ocrsubmission_grades:userid']         = 'The ID of the student who was graded.';
-$string['privacy:metadata:ocrsubmission_grades:grade']          = 'The grade given to the student.';
-$string['privacy:metadata:ocrsubmission_grades:feedback']       = 'The feedback provided to the student.';
-$string['privacy:metadata:ocrsubmission_grades:grader']         = 'The ID of the teacher who graded.';
-$string['privacy:metadata:ocrsubmission_grades:timegraded']     = 'The time at which the student was graded.';
+$string['privacy:metadata:landingocractivity_submissions']           = 'Information about student submissions.';
+$string['privacy:metadata:landingocractivity_submissions:userid']    = 'The ID of the student.';
+$string['privacy:metadata:landingocractivity_submissions:ocr_text']  = 'The OCR-extracted text from the submitted document.';
+$string['privacy:metadata:landingocractivity_submissions:status']    = 'The processing status of the submission.';
+$string['privacy:metadata:landingocractivity_submissions:timecreated'] = 'The time the submission was created.';
+$string['privacy:metadata:landingocractivity_grades']                = 'Information about grades and feedback given to students.';
+$string['privacy:metadata:landingocractivity_grades:userid']         = 'The ID of the student who was graded.';
+$string['privacy:metadata:landingocractivity_grades:grade']          = 'The grade given to the student.';
+$string['privacy:metadata:landingocractivity_grades:feedback']       = 'The feedback provided to the student.';
+$string['privacy:metadata:landingocractivity_grades:grader']         = 'The ID of the teacher who graded.';
+$string['privacy:metadata:landingocractivity_grades:timegraded']     = 'The time at which the student was graded.';
 $string['privacy:metadata:landingai_api']                       = 'Document text is sent to the LandingAI Document Analysis API for OCR processing.';
 $string['privacy:metadata:landingai_api:document']              = 'The uploaded document (image or PDF) is sent to LandingAI for text extraction.';

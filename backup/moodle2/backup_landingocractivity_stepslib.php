@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Define all the backup steps that will be used by the backup_ocrsubmission_activity_task.
+ * Define all the backup steps that will be used by the backup_landingocractivity_activity_task.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,12 +25,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Define the complete ocrsubmission structure for backup, with file and id annotations.
+ * Define the complete landingocractivity structure for backup, with file and id annotations.
  */
-class backup_ocrsubmission_activity_structure_step extends backup_activity_structure_step {
+class backup_landingocractivity_activity_structure_step extends backup_activity_structure_step {
 
     /**
-     * Define the ocrsubmission backup structure.
+     * Define the landingocractivity backup structure.
      *
      * @return backup_nested_element
      */
@@ -38,7 +38,7 @@ class backup_ocrsubmission_activity_structure_step extends backup_activity_struc
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated.
-        $ocrsubmission = new backup_nested_element('ocrsubmission', ['id'], [
+        $landingocractivity = new backup_nested_element('landingocractivity', ['id'], [
             'name', 'intro', 'introformat', 'grade', 'timecreated', 'timemodified',
         ]);
 
@@ -53,18 +53,18 @@ class backup_ocrsubmission_activity_structure_step extends backup_activity_struc
         ]);
 
         // Build the tree.
-        $ocrsubmission->add_child($submissions);
+        $landingocractivity->add_child($submissions);
         $submissions->add_child($submission);
 
-        $ocrsubmission->add_child($grades);
+        $landingocractivity->add_child($grades);
         $grades->add_child($grade);
 
         // Define sources.
-        $ocrsubmission->set_source_table('ocrsubmission', ['id' => backup::VAR_ACTIVITYID]);
+        $landingocractivity->set_source_table('landingocractivity', ['id' => backup::VAR_ACTIVITYID]);
 
         if ($userinfo) {
-            $submission->set_source_table('ocrsubmission_submissions', ['ocrsubmissionid' => backup::VAR_PARENTID]);
-            $grade->set_source_table('ocrsubmission_grades', ['ocrsubmissionid' => backup::VAR_PARENTID]);
+            $submission->set_source_table('landingocractivity_submissions', ['landingocractivityid' => backup::VAR_PARENTID]);
+            $grade->set_source_table('landingocractivity_grades', ['landingocractivityid' => backup::VAR_PARENTID]);
         }
 
         // Define id annotations.
@@ -73,8 +73,8 @@ class backup_ocrsubmission_activity_structure_step extends backup_activity_struc
         $grade->annotate_ids('user', 'grader');
 
         // Define file annotations (but not the apikey which is sensitive).
-        $submission->annotate_files('mod_ocrsubmission', 'submission', 'id');
+        $submission->annotate_files('mod_landingocractivity', 'submission', 'id');
 
-        return $this->prepare_activity_structure($ocrsubmission);
+        return $this->prepare_activity_structure($landingocractivity);
     }
 }

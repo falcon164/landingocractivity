@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_ocrsubmission submission graded event.
+ * The mod_landingocractivity submission graded event.
  *
- * @package   mod_ocrsubmission
+ * @package   mod_landingocractivity
  * @copyright 2024, LandingAI OCR Submission
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_ocrsubmission\event;
+namespace mod_landingocractivity\event;
 
 /**
- * The mod_ocrsubmission submission graded event class.
+ * The mod_landingocractivity submission graded event class.
  *
- * @package    mod_ocrsubmission
+ * @package    mod_landingocractivity
  * @copyright  2024, LandingAI OCR Submission
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -39,7 +39,7 @@ class submission_graded extends \core\event\base {
     protected function init(): void {
         $this->data['crud']        = 'u';
         $this->data['edulevel']    = self::LEVEL_TEACHING;
-        $this->data['objecttable'] = 'ocrsubmission_grades';
+        $this->data['objecttable'] = 'landingocractivity_grades';
     }
 
     /**
@@ -49,7 +49,7 @@ class submission_graded extends \core\event\base {
      */
     public function get_description(): string {
         return "The user with id '{$this->userid}' graded the submission from user with id "
-            . "'{$this->relateduserid}' for the ocrsubmission activity with course module id '{$this->contextinstanceid}'.";
+            . "'{$this->relateduserid}' for the landingocractivity activity with course module id '{$this->contextinstanceid}'.";
     }
 
     /**
@@ -58,7 +58,7 @@ class submission_graded extends \core\event\base {
      * @return string
      */
     public static function get_name(): string {
-        return get_string('eventsubmissiongraded', 'mod_ocrsubmission');
+        return get_string('eventsubmissiongraded', 'mod_landingocractivity');
     }
 
     /**
@@ -68,7 +68,7 @@ class submission_graded extends \core\event\base {
      */
     public function get_url(): \moodle_url {
         return new \moodle_url(
-            '/mod/ocrsubmission/view.php',
+            '/mod/landingocractivity/view.php',
             ['id' => $this->contextinstanceid, 'userid' => $this->relateduserid]
         );
     }
