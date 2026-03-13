@@ -197,7 +197,7 @@ class process_ocr extends adhoc_task {
     protected function extract_text_from_response(array $response): string {
         // LandingAI ADE API (api.va.landing.ai/v1/ade/parse) returns a top-level "markdown" field.
         if (!empty($response['markdown'])) {
-            return (string) $response['markdown'];
+            return $this->strip_heading_anchors((string) $response['markdown']);
         }
 
         // Fallback: try chunks array (each chunk has a "markdown" or "text" field).
@@ -211,7 +211,7 @@ class process_ocr extends adhoc_task {
                 }
             }
             if (!empty($texts)) {
-                return implode("\n\n", $texts);
+                return $this->strip_heading_anchors(implode("\n\n", $texts));
             }
         }
 
@@ -220,7 +220,7 @@ class process_ocr extends adhoc_task {
             $data = $response['data'];
 
             if (!empty($data['markdown'])) {
-                return (string) $data['markdown'];
+                return $this->strip_heading_anchors((string) $data['markdown']);
             }
 
             if (!empty($data['chunks']) && is_array($data['chunks'])) {
@@ -231,28 +231,44 @@ class process_ocr extends adhoc_task {
                     }
                 }
                 if (!empty($texts)) {
-                    return implode("\n\n", $texts);
+                    return $this->strip_heading_anchors(implode("\n\n", $texts));
                 }
             }
 
             if (!empty($data['text'])) {
-                return (string) $data['text'];
+                return $this->strip_heading_anchors((string) $data['text']);
             }
         }
 
         // Fallback: try top-level "result" or "text".
         if (!empty($response['result'])) {
-            return (string) $response['result'];
+            return $this->strip_heading_anchors((string) $response['result']);
         }
 
         if (!empty($response['text'])) {
-            return (string) $response['text'];
+            return $this->strip_heading_anchors((string) $response['text']);
         }
 
         // If none of the above, return a JSON dump for debugging.
         throw new \RuntimeException(
             'Unable to extract text from LandingAI API response. Response: ' . json_encode($response)
         );
+    }
+
+    /**
+     * Remove empty HTML anchor tags that LandingAI inserts before headings.
+     *
+     * The LandingAI API often returns markdown with anchor tags such as
+     * <a id="..."></a> immediately before heading lines. These serve as
+     * internal navigation targets but are unwanted in plain-text output.
+     *
+     * @param string $text The raw text to clean.
+     * @return string The text with heading anchor tags removed.
+     */
+    protected function strip_heading_anchors(string $text): string {
+        // Remove <a ...></a> tags that contain no visible content (including whitespace-only).
+        $text = preg_replace('/<a[^>]*>\s*<\/a>/i', '', $text);
+        return $text;
     }
 
     /**
