@@ -67,7 +67,7 @@ class process_ocr extends adhoc_task {
             return;
         }
 
-        // Get the ocrsubmission instance to retrieve the API key.
+        // Get the ocrsubmission instance.
         $ocrsubmission = $DB->get_record('ocrsubmission', ['id' => $submission->ocrsubmissionid]);
         if (!$ocrsubmission) {
             mtrace("process_ocr task: ocrsubmission instance {$submission->ocrsubmissionid} not found.");
@@ -75,13 +75,29 @@ class process_ocr extends adhoc_task {
             return;
         }
 
-        if (empty($ocrsubmission->apikey)) {
+        // Get the API key from the global plugin setting.
+        // Administrators configure this once via Site administration > Plugins > Activity modules >
+        // OCR Submission. For backward compatibility, if the global key is not set, the key stored
+        // on the activity instance (from a prior version of the plugin) is used as a fallback.
+        // Once all existing instances have been superseded by the global setting, the instance-level
+        // fallback can be removed along with the 'apikey' column in the ocrsubmission table.
+        $apikey = get_config('mod_ocrsubmission', 'apikey');
+        if (empty($apikey)) {
+            // Fallback: use the legacy instance-level API key if the global key is not configured.
+            $apikey = $ocrsubmission->apikey ?? '';
+            if (!empty($apikey)) {
+                mtrace(
+                    "process_ocr task: global API key is not set; using legacy instance-level key " .
+                    "for ocrsubmission {$ocrsubmission->id}. Please configure the key in the plugin settings."
+                );
+            }
+        }
+
+        if (empty($apikey)) {
             mtrace("process_ocr task: no API key configured for ocrsubmission {$ocrsubmission->id}.");
             $this->mark_error($submission, 'LandingAI API key not configured.');
             return;
         }
-
-        // Mark as processing.
         $DB->set_field('ocrsubmission_submissions', 'status', 'processing', ['id' => $submissionid]);
 
         // Get the stored file.
@@ -108,7 +124,7 @@ class process_ocr extends adhoc_task {
 
         // Perform the OCR API call.
         try {
-            $ocrtext = $this->call_landingai_api($file, $ocrsubmission->apikey);
+            $ocrtext = $this->call_landingai_api($file, $apikey);
         } catch (\Exception $e) {
             mtrace("process_ocr task: API call failed for submission {$submissionid}: " . $e->getMessage());
             $this->mark_error($submission, $e->getMessage());

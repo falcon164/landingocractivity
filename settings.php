@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Plugin administration settings.
  *
  * @package   mod_ocrsubmission
  * @copyright 2024, LandingAI OCR Submission
@@ -24,8 +24,17 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_ocrsubmission';
-$plugin->version   = 2024120101;
-$plugin->requires  = 2024042200; // Moodle 4.4+
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '1.0.1';
+if ($ADMIN->fulltree) {
+    $settings->add(new admin_setting_heading(
+        'mod_ocrsubmission/landingaisettingsheading',
+        get_string('landingaisettings', 'mod_ocrsubmission'),
+        get_string('landingaisettings_desc', 'mod_ocrsubmission')
+    ));
+
+    $settings->add(new admin_setting_configpasswordunmask(
+        'mod_ocrsubmission/apikey',
+        get_string('apikey', 'mod_ocrsubmission'),
+        get_string('apikey_help', 'mod_ocrsubmission'),
+        ''
+    ));
+}
