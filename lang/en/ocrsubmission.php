@@ -37,6 +37,7 @@ $string['ocrsubmissionname_help'] = 'Give this OCR Submission activity a descrip
 
 // Settings sections.
 $string['landingaisettings']   = 'LandingAI API settings';
+$string['landingaisettings_desc'] = 'Configure the LandingAI API key used for OCR processing. This key applies to all OCR Submission activities in Moodle.';
 $string['submissionsettings']  = 'Submission settings';
 
 // API key.

@@ -64,19 +64,6 @@ class mod_ocrsubmission_mod_form extends moodleform_mod {
             $this->add_intro_editor();
         }
 
-        // LandingAI API settings.
-        $mform->addElement('header', 'landingaisettings', get_string('landingaisettings', 'mod_ocrsubmission'));
-
-        $mform->addElement(
-            'passwordunmask',
-            'apikey',
-            get_string('apikey', 'mod_ocrsubmission'),
-            ['size' => '64']
-        );
-        $mform->setType('apikey', PARAM_RAW_TRIMMED);
-        $mform->addRule('apikey', null, 'required', null, 'client');
-        $mform->addHelpButton('apikey', 'apikey', 'mod_ocrsubmission');
-
         // Add standard grading elements.
         $this->standard_grading_coursemodule_elements();
 
@@ -96,10 +83,6 @@ class mod_ocrsubmission_mod_form extends moodleform_mod {
      */
     public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
-
-        if (empty($data['apikey'])) {
-            $errors['apikey'] = get_string('apikeyerror', 'mod_ocrsubmission');
-        }
 
         return $errors;
     }
